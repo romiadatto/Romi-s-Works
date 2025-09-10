@@ -1,4 +1,5 @@
 from colorama import init, Fore, Back
+
 init(autoreset=True)
 
 # constant variables
@@ -40,10 +41,25 @@ def split_lesson(
         if len(parts) != 4:
             return None
 
-        lesson_name = parts[0]
-        lesson_duration = int(parts[1])
-        lesson_day = parts[2]
-        lesson_start = int(parts[3])
+        if (type(parts[0]) == str):
+            lesson_name = parts[0]
+        else:
+            lesson_name = None
+
+        try:
+            lesson_duration = int(parts[1])
+        except:
+            lesson_duration = None
+
+        if (type(parts[2]) == str):
+            lesson_day = parts[2]
+        else:
+            lesson_day = None
+
+        try:
+            lesson_start = int(parts[3])
+        except:
+            lesson_start = None
 
         return [lesson_name, lesson_duration, lesson_day, lesson_start]
 
@@ -151,7 +167,7 @@ def main():
     while (number_of_hours > LAST_HOUR - FIRST_HOUR):
         print("invalid input")
         number_of_hours = int(
-            input("Enter number of study hours per day (max 8): "))
+                input("Enter number of study hours per day (max 8): "))
 
     schedule = create_schedule(number_of_days, number_of_hours)
 
@@ -159,15 +175,19 @@ def main():
     lessons = []
     while True:
         lesson_text = input(
-            "Enter lesson [name_duration_day_start] or 'done' to finish: ")
+                "Enter lesson [name_duration_day_start] or 'done' to finish: ")
         splits = split_lesson(lesson_text)
         if lesson_text.lower() != "done":
-            while (splits[2] not in DAYS_INDEX or splits[2]!=splits[2].lower() or splits[3] < FIRST_HOUR or
-                   splits[3] > LAST_HOUR or splits[1] > number_of_hours):
-                print("invalid input- Bad time entry or Using capital letters or unexist day.")
+            while (splits[0] == None or splits[1] == None or
+                   splits[2] == None or splits[2] not in DAYS_INDEX or splits[
+                       2] != splits[2].lower() or splits[3] < FIRST_HOUR or
+                   splits[3] == None or splits[3] > LAST_HOUR or splits[
+                       1] > number_of_hours):
+                print(
+                        "invalid input- Bad time entry or Using capital letters or unexist day.")
                 print("try again")
                 lesson_text = input(
-                    "Enter lesson [name_duration_day_start] or 'done' to finish: ")
+                        "Enter lesson [name_duration_day_start] or 'done' to finish: ")
                 splits = split_lesson(lesson_text)
 
         else:
@@ -189,7 +209,7 @@ def main():
 
     if len(still_failed) == 0:
         print(
-            Fore.GREEN + "All lessons inserted successfully after reinsertion if needed.")
+                Fore.GREEN + "All lessons inserted successfully after reinsertion if needed.")
         print_schedule(schedule)
     else:
         print(Fore.RED + "The schedule's creation failed.")
