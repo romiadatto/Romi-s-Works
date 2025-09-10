@@ -42,7 +42,7 @@ def split_lesson(
 
         lesson_name = parts[0]
         lesson_duration = int(parts[1])
-        lesson_day = parts[2].lower()
+        lesson_day = parts[2]
         lesson_start = int(parts[3])
 
         return [lesson_name, lesson_duration, lesson_day, lesson_start]
@@ -162,12 +162,14 @@ def main():
             "Enter lesson [name_duration_day_start] or 'done' to finish: ")
         splits = split_lesson(lesson_text)
         if lesson_text.lower() != "done":
-            while (splits[2] not in DAYS_INDEX or splits[3] < FIRST_HOUR or
+            while (splits[2] not in DAYS_INDEX or splits[2]!=splits[2].lower() or splits[3] < FIRST_HOUR or
                    splits[3] > LAST_HOUR or splits[1] > number_of_hours):
-                print("invalid input or Bad time entry")
+                print("invalid input- Bad time entry or Using capital letters or unexist day.")
+                print("try again")
                 lesson_text = input(
                     "Enter lesson [name_duration_day_start] or 'done' to finish: ")
                 splits = split_lesson(lesson_text)
+
         else:
             break
 
